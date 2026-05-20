@@ -1,0 +1,48 @@
+/* עיצוב כללי לכל העמוד */
+#root {
+  text-align: center;
+  font-family: sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 40px;
+}
+
+/* עיצוב הכותרות בדיוק לפי השמות שנתנו ב-App.jsx */
+.mainTitle {
+  font-size: 3rem;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.subTitle {
+  font-size: 1.5rem;
+  color: #646cff;
+  margin-bottom: 30px;
+}
+
+/* עיצוב הכפתור */
+button {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 15px 35px;
+  border-radius: 12px;
+  color: white;
+  background-color: #646cff;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  display: block;
+  margin: 20px auto;
+}
+
+button:hover {
+  background-color: #535bf2;
+  transform: scale(1.05);
+}
+input:invalid {
+  border: 1px solid #feb2b2; /* מסגרת אדומה אם זה לא תקין */
+}
+
+input:required:focus {
+  border-bottom: 2px solid #e53e3e;
+}

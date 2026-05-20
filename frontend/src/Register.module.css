@@ -1,0 +1,93 @@
+/* Register.module.css */
+
+.registerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  padding: 3rem;
+  margin: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: 1px solid #feb2b2;
+  /* הוספת כיווניות לימין עבור העברית */
+  direction: rtl;
+}
+
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* מתיחה של האלמנטים לרוחב הטופס */
+  gap: 12px;
+  width: 100%;
+  max-width: 350px;
+}
+
+.mainTitle {
+  color: #c53030;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* .mainTitle::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #f56565;
+  margin: 15px auto;
+  border-radius: 2px;
+} */
+
+/* עיצוב התוויות - Labels */
+.registerForm label {
+  text-align: right;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+  margin-bottom: -8px; /* הצמדה לאינפוט */
+}
+
+/* עיצוב שדות הקלט - Inputs */
+.registerForm input {
+  padding: 12px 15px;
+  border: 1px solid #feb2b2;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: white;
+  transition: all 0.3s ease;
+  outline: none;
+  text-align: right;
+}
+
+.registerForm input:focus {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2);
+}
+
+/* עיצוב כפתור ההרשמה */
+.registerForm button {
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.registerForm button:hover {
+  background-color: #c53030;
+}
+
+.registerForm button:active {
+  transform: scale(0.98);
+}
