@@ -32,7 +32,7 @@ public interface TransactionsRepo extends JpaRepository<Transactions, Long> {
     boolean existsByVehicle_VehicleIdAndEndTime(long vehicleId, LocalDateTime endTime);
 
     // מוצא את כל הרכבים שחונים כרגע בחניון
-    List<Transactions> findAllByEndTime(LocalDateTime endTime);
+    List<Transactions> findAllByStatus(TransactionStatus status);
     boolean existsByLicensePlateAndStatus(String licensePlate, TransactionStatus status);
     Vehicles findByLicensePlate(final String licensePlate);
     List<Transactions> findAllByEndTimeIsNull();

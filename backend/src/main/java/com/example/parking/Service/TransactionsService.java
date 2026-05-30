@@ -92,7 +92,53 @@ public class TransactionsService {
         return transactionsRepo.save(transactions);
 
 
+    }
+    //מציאת כל הרכבים שנמצאים כרגע בחניה
+    public List<Transactions> findTransactionsByStatus() {
+        return transactionsRepo.findAllByStatus(TransactionStatus.ACTIVE);
+    }
+
+
+    public Transactions exitParking(String licensePlate) {
+        Transactions activeTransaction = transactionsRepo.findAllByStatus(TransactionStatus.ACTIVE)
+                .stream()
+                .filter(t -> t.getLicensePlate().equals(licensePlate))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Vehicle is not currently in the parking lot"));
+
+        LocalDateTime actualExitTime = LocalDateTime.now();
+
+        double penalty = 0.0;
+
+        if (activeTransaction.getEndTime() != null) {
+
+            // אם השעה עכשיו (actualExitTime) היא אחרי זמן הסיום שהוגדר מראש (endTime) -> יש חריגה!
+            if (actualExitTime.isAfter(activeTransaction.getEndTime())) {
+
+                // מחשבים כמה דקות חריגה היו בין זמן הסיום המוזמן לזמן של עכשיו
+                long minutesOverstayed = java.time.Duration.between(activeTransaction.getEndTime(), actualExitTime).toMinutes();
+
+                // תעריף קנס חריגה: 50 ש"ח לשעה (שזה 0.83 ש"ח לדקה)
+                double penaltyPerMinute = 50.0 / 60.0;
+                penalty = minutesOverstayed * penaltyPerMinute;
+
+                System.out.println("הרכב חרג ב-" + minutesOverstayed + " דקות. קנס: " + penalty);
+            }
+        }
+
+        double pricePerHour = (activeTransaction.getUser() == null) ? 15.0 : 5.0;
+        double pricePerMinute = pricePerHour / 60.0;
+
+        long totalMinutesParked = java.time.Duration.between(activeTransaction.getStartTime(), actualExitTime).toMinutes();
+        double basePrice = totalMinutesParked * pricePerMinute;
+        activeTransaction.setEndTime(actualExitTime);
+        activeTransaction.setTotalPayment(basePrice + penalty);
+        activeTransaction.setStatus(TransactionStatus.COMPLETED);
+
+        return transactionsRepo.save(activeTransaction);
 
 
     }
+
+
 }
