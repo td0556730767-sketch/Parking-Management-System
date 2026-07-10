@@ -1,48 +1,45 @@
-/* עיצוב כללי לכל העמוד */
-#root {
-  text-align: center;
-  font-family: sans-serif;
-  background-color: #f8f9fa;
-  min-height: 100vh;
-  padding: 40px;
-}
-
-/* עיצוב הכותרות בדיוק לפי השמות שנתנו ב-App.jsx */
-.mainTitle {
-  font-size: 3rem;
-  color: #1a1a1a;
-  margin-bottom: 10px;
-}
-
-.subTitle {
-  font-size: 1.5rem;
-  color: #646cff;
-  margin-bottom: 30px;
-}
-
-/* עיצוב הכפתור */
-button {
-  font-size: 1.2rem;
-  font-weight: bold;
-  padding: 15px 35px;
-  border-radius: 12px;
-  color: white;
-  background-color: #646cff;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-  display: block;
+.parking-gate-simulation {
+  position: relative;
+  width: 200px;
+  height: 120px;
   margin: 20px auto;
+  border-bottom: 4px solid #333;
 }
 
-button:hover {
-  background-color: #535bf2;
-  transform: scale(1.05);
-}
-input:invalid {
-  border: 1px solid #feb2b2; /* מסגרת אדומה אם זה לא תקין */
+.barrier-post {
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  width: 20px;
+  height: 60px;
+  background-color: #555;
 }
 
-input:required:focus {
-  border-bottom: 2px solid #e53e3e;
+.barrier-arm {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  width: 120px;
+  height: 10px;
+  background-color: #ff3b30; /* צבע אדום של מחסום */
+  transform-origin: left center; /* נקודת הסיבוב היא בצד שמאל */
+  transition: transform 0.6s ease-in-out; /* אנימציה חלקה של פתיחה */
+}
+
+/* המצבים השונים של המחסום */
+.barrier-arm.closed {
+  transform: rotate(0deg);
+}
+
+.barrier-arm.checking {
+  animation: jitter 0.3s infinite alternate; /* אפקט רטט קל בזמן הבדיקה */
+}
+
+.barrier-arm.open {
+  transform: rotate(-90deg); /* המחסום עולה למעלה */
+}
+
+@keyframes jitter {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-3deg); }
 }
