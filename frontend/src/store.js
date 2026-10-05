@@ -1,13 +1,39 @@
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import { thunk } from "redux-thunk";
-import dashboardReducer from "./features/dashboard/dashboardSlice";
-// import userReducer from "./features/users/userSlice";
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-const rootReducer = combineReducers({
-  dashboard: dashboardReducer,
-  // user: userReducer,
+// יצירת Slice (פרוסה) ניהול מצב עבור משתמש והתחברות
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: {
+    token: localStorage.getItem('token') || null,
+    user: null,
+    isAuthenticated: !!localStorage.getItem('token'),
+  },
+  reducers: {//הפעולות
+    setCredentials: (state, action) => {// פעולה שמעדכנת את הסטייט עם פרטי המשתמש והטוקן
+
+      state.token = action.payload.token;
+      state.user = action.payload.user;
+      state.isAuthenticated = true;
+      localStorage.setItem('token', action.payload.token);
+    },
+    logout: (state) => {
+      state.token = null;
+      state.user = null;
+      state.isAuthenticated = false;
+      localStorage.removeItem('token');
+    },
+  },
 });
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+// לייצוא הפעולות (Actions) כדי שנוכל להפעיל אותן בקומפוננטות כמו Login
+export const { setCredentials, logout } = authSlice.actions;
+
+// יצירת ה-Store המרכזי של האפליקציה
+export const store = configureStore({
+  reducer: {
+    auth: authSlice.reducer,
+    // בהמשך נוכל להוסיף כאן עוד reducers (למשל: parking, vehicles וכו')
+  },
+});
 
 export default store;
