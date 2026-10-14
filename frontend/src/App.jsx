@@ -1,12 +1,16 @@
 import React from 'react';
-import Login from './components/Login.jsx';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
   return (
-    <div>
-      <h1>מערכת ניהול חניה חכמה</h1>
-      {/* כאן בהמשך נציג את המסכים כמו Login, VehicleEntry וכו' */}
-      <Login />
+    <div className="app-container">
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
     </div>
   );
 }
