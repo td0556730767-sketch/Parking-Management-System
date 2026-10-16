@@ -1,0 +1,28 @@
+.navbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  direction: rtl;
+}
+
+.navbar a {
+  color: #28a745;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.navbar-user {
+  color: #666;
+}
+
+.navbar button {
+  margin-right: auto;
+  padding: 6px 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
