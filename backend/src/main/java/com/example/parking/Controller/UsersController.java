@@ -1,24 +1,26 @@
 package com.example.parking.Controller;
+
 import com.example.parking.Entities.Users;
-import com.example.parking.Service.ParkingService;
 import com.example.parking.Service.UsersService;
 import com.example.parking.Service.VehiclesService;
+import com.example.parking.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/api/users") // הכתובת הבסיסית
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
-
 public class UsersController {
 
     private final UsersService usersService;
     private final VehiclesService vehiclesService;
-
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/getAllUsers")
     public List<Users> getAllUsers() {
@@ -26,46 +28,78 @@ public class UsersController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestParam long id) {
-        Optional<Users> user = usersService.getUserById(id);
-        if (user.isPresent()) {
-            return "ברוך הבא " + user.get().getFullName() + "! הגעת בהצלחה.";
-        } else {
-            return "שגיאה: לא נמצא משתמש עם מספר מזהה זה.";
-        }
-    }
-//    @PostMapping("/register")
-//    public String registerGuest(@RequestBody Users newUser, @RequestParam String vehicleId,
-//                                @RequestParam String vehicleType, // "HANDICAPPED", "TRUCK", "PRIVATE"
-//                                @RequestParam String licensePlate) {
-//        // 1. יצירת המשתמש החדש עם בונוס הרשמה
-//        newUser.setStars(50);
-//        Users savedUser = usersService.saveUser(newUser);
-//
-//        // 2. שיוך הרכב של האורח למשתמש החדש
-//        // אנחנו קוראים ל-VehiclesService שיעדכן את הבעלים של הרכב
-//        vehiclesService.assignVehicleToUser(vehicleId, savedUser.getUserId(),vehicleType,licensePlate);
-//
-//        return "ברוך הבא! נרשמת בהצלחה. הרכב " + vehicleId + " שויך לחשבונך ותקבל הנחה אוטומטית בפעם הבאה.";
-//    }
-    /**
-     * בדיקת יתרת כוכבים/נקודות של משתמש
-     */
-    @PostMapping("/register")
-    public String registerUser(@RequestBody Users newUser) {
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginRequest) {
         try {
-            // נרשם את המשתמש ונותנים לו 50 כוכבים בהתחלה
-            Users savedUser = usersService.addNewUser(newUser);
-            return "המשתמש " + savedUser.getFullName() + " נרשם בהצלחה.";
+            // 1. חילוץ ה-id והסיסמה שהגיעו מה-React
+            String idStr = loginRequest.get("userId");
+            Long id = Long.parseLong(idStr);
+            String phoneNumber = loginRequest.get("phoneNumber");
+
+            if (idStr == null || phoneNumber == null) {
+                return ResponseEntity.status(400).body("שגיאה: יש לספק גם מספר מזהה וגם מספר טלפון.");
+            }
+            // 2. חיפוש המשתמש לפי ה-Service המקורי שלך
+            Optional<Users> userOptional = usersService.getUserById(id);
+
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.status(401).body("שגיאה: לא נמצא משתמש עם מספר מזהה זה.");
+            }
+
+            Users user = userOptional.get();
+
+            if (!user.getPhoneNumber().equals(phoneNumber)) {
+                // אם הטלפון לא מתאים - זה אומר שמישהו מנסה לשקר או לנחש! חוסמים אותו מיד.
+                return ResponseEntity.status(401).body("שגיאה: מספר הטלפון אינו תואם למשתמש זה.");
+            }
+
+            // 3. יצירת הטוקן: משתמשים ב-phoneNumber במקום email כי זה מה שיש באנטיטי שלך
+            String token = jwtUtil.generateToken(user.getPhoneNumber(), "no_password", user.getUserId(),user.getRole());
+            // 4. החזרת הטוקן ל-React
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "user" ,user,
+                    "message", "ברוך הבא " + user.getFullName() + "! הגעת בהצלחה."
+            ));
+
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(400).body("שגיאה: מספר מזהה לא תקין.");
         } catch (RuntimeException e) {
-            return e.getMessage();  // אם קיים כבר משתמש עם אותו טלפון, תחזור שגיאה
+            return ResponseEntity.status(401).body("שגיאה בתהליך ההתחברות: " + e.getMessage());
         }
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody Users newUser) {
+        try {
+            // 1. הפעלת ה-Service המקורי שלך לשמירת המשתמש
+            Users savedUser = usersService.addNewUser(newUser);
+
+            // 2. יצירת טוקן עם ה-phoneNumber של המשתמש שנשמר (בלי getPassword שלא קיים אצלך)
+            String token = jwtUtil.generateToken(savedUser.getPhoneNumber(), "no_password", savedUser.getUserId(),savedUser.getRole());
+
+            // 3. החזרת תשובה ל-React
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "user", savedUser ,
+                    "message", "המשתמש " + savedUser.getFullName() + " נרשם וחובר בהצלחה!"
+            ));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    /**
+     * בדיקת יתרת כוכבים/נקודות של משתמש
+     */
     @GetMapping("/{userId}/points")
     public String getUserPoints(@PathVariable long userId) {
         return usersService.getUserById(userId)
                 .map(u -> "User has " + u.getStars() + " stars.")
                 .orElse("User not found.");
+    }
+    @GetMapping("/getById/{userId}")
+    public Optional<Users> getUserById(@PathVariable long userId) {
+        return usersService.getUserById(userId);
     }
 }

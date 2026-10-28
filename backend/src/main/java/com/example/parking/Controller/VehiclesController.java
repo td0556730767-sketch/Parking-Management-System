@@ -33,7 +33,7 @@ public class VehiclesController {
     /**
      * מציאת רכבים לפי ID של משתמש
      */
-    @GetMapping("/user/{userId}")
+    @GetMapping("/userVehicleById/{userId}")
     public List<Vehicles> getVehiclesByUser(@PathVariable long userId) {
         return vehiclesService.getVehiclesByUserId(userId);
     }

@@ -27,7 +27,7 @@ public class TransactionController {
 
     }
 
-    @PostMapping("start/{licensePlate}")
+    @PostMapping("/start/{licensePlate}")
     public Transactions startTransaction(@PathVariable String licensePlate) {
         return transactionsService.createTransaction(licensePlate);
     }

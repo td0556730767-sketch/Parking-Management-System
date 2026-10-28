@@ -1,7 +1,6 @@
 package com.example.parking.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
     @NoArgsConstructor
@@ -15,9 +14,13 @@ import lombok.*;
         @Id
         private long userId;
         private String fullName;
+        @Column(nullable = false)
         private String phoneNumber;
         private double balance; // יתרה כספית בחשבון
-        private int stars; // לצבירת נקודות הטבה
+        private int stars;// לצבירת נקודות הטבה
+        @Builder.Default
+        @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'USER'")
+        private String role = "USER";
 
 
     }

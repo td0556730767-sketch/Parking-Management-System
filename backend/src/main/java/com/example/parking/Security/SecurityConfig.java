@@ -4,6 +4,8 @@ import com.example.parking.jwt.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,25 +25,49 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
+    /**
+     * שרשרת אבטחה לסביבת פיתוח בלבד (dev).
+     * מוגדרת בעדיפות גבוהה יותר (@Order(1)) כדי שתטפל ב-H2 Console לפני השרשרת הראשית.
+     */
+    @Configuration
+    @Profile("dev")
+    public static class DevSecurityConfig {
+
+        @Bean
+        @Order(1)
+        public SecurityFilterChain devSecurityFilterChain(HttpSecurity http) throws Exception {
+            http
+                    .securityMatcher("/h2-console/**")
+                    .csrf(csrf -> csrf.disable())
+                    .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                    .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+
+            return http.build();
+        }
+    }
+
+    /**
+     * שרשרת האבטחה הראשית של האפליקציה.
+     */
     @Bean
+    @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())) // מאפשר תצוגת Frames גם ברמה הכללית
                 .authorizeHttpRequests(auth -> auth
-                        // כאן הוספתי את הנתיב /api/users/* כדי לאפשר בדיקת משתמש ללא טוקן
                         .requestMatchers(
-                                "/api/parking/all",
                                 "/api/users/register",
-                                "/api/users/login",
-                                "/api/users/*"
+                                "/api/users/login"
                         ).permitAll()
-
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/transactions/exit/**").permitAll()
-
+                        .requestMatchers("/api/transactions/start/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/users/getAllUsers").hasRole("ADMIN")
                         .requestMatchers("/api/users/**").authenticated()
+                        .requestMatchers("/api/vehicles/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -65,5 +91,11 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public org.springframework.security.authentication.AuthenticationManager authenticationManager(
+            org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

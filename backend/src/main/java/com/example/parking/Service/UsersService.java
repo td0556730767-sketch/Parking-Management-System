@@ -16,9 +16,6 @@ public class UsersService {
         this.usersRepo = usersRepo;
     }
 
-//    public UsersService(UsersRepo usersRepo) {
-//        this.usersRepo = usersRepo;
-//    }
 
     // הוספת משתמש חדש
     public Users saveUser(Users user) {
@@ -26,15 +23,14 @@ public class UsersService {
     }
 
     public Users addNewUser(Users newUser) {
-        // במקרה של משתמש עם טלפון זהה, נוכל לחזור על זה או להחזיר שגיאה
-        if (usersRepo.existsById(newUser.getUserId())) {
-            throw new RuntimeException("משתמש עם מספר טלפון זה כבר קיים");
-        }
 
+        if (usersRepo.existsById(newUser.getUserId())) {
+            throw new RuntimeException("קיים משתמש עם ID זהה");
+        }
         // הוספת כוכבים התחלתיים
         newUser.setStars(50);
-
-
+        newUser.setBalance(0);
+        newUser.setRole("USER");
         // שמירת המשתמש בבסיס הנתונים
         return usersRepo.save(newUser);
     }

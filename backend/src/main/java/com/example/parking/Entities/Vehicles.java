@@ -19,7 +19,7 @@ import lombok.*;
         private String licensePlate; // מספר רישוי הרכב
 
         @ManyToOne
-        @JoinColumn(name = "user_id")
+        @JoinColumn(name = "user_id",nullable = true)
         private Users user;
 
         @Enumerated(EnumType.STRING)
