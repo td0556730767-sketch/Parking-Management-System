@@ -1,0 +1,363 @@
+/* =========================================================
+   Page
+   ========================================================= */
+.map-page {
+  align-self: flex-start;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 36px 24px 48px;
+  direction: rtl;
+  animation: fade-up 0.5s ease both;
+}
+
+.map-page .auth-title {
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+/* loading text */
+.map-page > p:not(.map-summary) {
+  text-align: center;
+  color: var(--muted-foreground);
+  animation: lamp-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes lamp-pulse {
+  from { opacity: 1; }
+  to { opacity: 0.4; }
+}
+
+/* =========================================================
+   Floor selector – segmented control
+   ========================================================= */
+.floor-tabs {
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 16px;
+  padding: 6px;
+  overflow-x: auto;
+  background: rgba(226, 232, 240, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(6px);
+}
+
+.floor-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 10px 18px;
+  background: transparent;
+  color: var(--muted-foreground);
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.floor-tab:hover {
+  color: var(--foreground);
+}
+
+.floor-tab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.floor-tab.active {
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+}
+
+.floor-tab.active::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+
+/* =========================================================
+   Summary pill
+   ========================================================= */
+.map-summary {
+  width: fit-content;
+  margin: 0 auto 20px;
+  padding: 8px 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.9rem;
+  color: var(--muted-foreground);
+}
+
+.map-summary strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--success-strong);
+}
+
+/* =========================================================
+   Parking lot
+   ========================================================= */
+.spots-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 12px;
+  padding: 64px 24px;
+  background:
+    radial-gradient(#e2e8f0 1px, transparent 1px) 0 0 / 18px 18px,
+    var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.spots-grid:empty {
+  display: none;
+}
+
+/* entrance / exit markers */
+.spots-grid::before,
+.spots-grid::after {
+  position: absolute;
+  left: 50%;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transform: translateX(-50%);
+}
+
+.spots-grid::before {
+  content: 'כניסה';
+  top: 16px;
+  background: var(--success);
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.45);
+}
+
+.spots-grid::after {
+  content: 'יציאה';
+  bottom: 16px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+/* ---------- single spot ---------- */
+.spot {
+  --car: #94a3b8;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 116px;
+  padding: 10px 6px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+  animation: fade-up 0.4s ease both;
+}
+
+.spot:hover {
+  transform: translateY(-3px) scale(1.03);
+}
+
+.spot-number {
+  order: 0;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* car / empty-bay graphic */
+.spot::before {
+  content: '';
+  order: 1;
+  flex-shrink: 0;
+}
+
+.spot-type {
+  order: 2;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+/* ---------- free ---------- */
+.spot.free {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.28), inset 0 0 10px rgba(16, 185, 129, 0.08);
+}
+
+.spot.free:hover {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.45), inset 0 0 12px rgba(16, 185, 129, 0.12);
+}
+
+.spot.free .spot-number {
+  color: var(--success-strong);
+}
+
+.spot.free::before {
+  width: 22px;
+  height: 34px;
+  border: 1.5px dashed rgba(16, 185, 129, 0.55);
+  border-radius: 5px;
+}
+
+/* free electric spot */
+.spot.free.ELECTRIC {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.3), inset 0 0 10px rgba(59, 130, 246, 0.08);
+}
+
+.spot.free.ELECTRIC .spot-number {
+  color: var(--electric);
+}
+
+.spot.free.ELECTRIC::before {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 0;
+  background: var(--electric);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2' fill='black'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2' fill='black'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* free accessible spot */
+.spot.free.HANDICAPPED {
+  background: rgba(168, 85, 247, 0.08);
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(168, 85, 247, 0.08);
+}
+
+.spot.free.HANDICAPPED .spot-number {
+  color: var(--accessible);
+}
+
+.spot.free.HANDICAPPED::before {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 0;
+  background: var(--accessible);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='4' r='1'/%3E%3Cpath d='m18 19 1-7-6 1'/%3E%3Cpath d='m5 8 3-3 5.5 3-2.36 3.5'/%3E%3Cpath d='M4.24 14.5a5 5 0 0 0 6.88 6'/%3E%3Cpath d='M13.76 17.5a5 5 0 0 0-6.88-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='4' r='1'/%3E%3Cpath d='m18 19 1-7-6 1'/%3E%3Cpath d='m5 8 3-3 5.5 3-2.36 3.5'/%3E%3Cpath d='M4.24 14.5a5 5 0 0 0 6.88 6'/%3E%3Cpath d='M13.76 17.5a5 5 0 0 0-6.88-6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ---------- occupied (top-view car) ---------- */
+.spot.occupied {
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.18);
+}
+
+.spot.occupied .spot-number {
+  color: var(--danger-strong);
+}
+
+.spot.occupied::before {
+  width: 26px;
+  height: 42px;
+  border-top: 3px solid #fde68a;
+  border-bottom: 3px solid #ef4444;
+  border-radius: 9px;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0 7px,
+      rgba(15, 23, 42, 0.8) 7px 13px,
+      transparent 13px 24px,
+      rgba(15, 23, 42, 0.55) 24px 29px,
+      transparent 29px
+    ),
+    var(--car);
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.25), inset 0 0 0 1px rgba(15, 23, 42, 0.12);
+}
+
+/* a little variety in car colors */
+.spot.occupied:nth-child(6n + 1) { --car: #cbd5e1; }
+.spot.occupied:nth-child(6n + 2) { --car: #475569; }
+.spot.occupied:nth-child(6n + 3) { --car: #f8fafc; }
+.spot.occupied:nth-child(6n + 4) { --car: #1e3a5f; }
+.spot.occupied:nth-child(6n + 5) { --car: #64748b; }
+.spot.occupied:nth-child(6n)     { --car: #334155; }
+.spot.occupied.ELECTRIC          { --car: #3b82f6; }
+
+/* =========================================================
+   Legend
+   ========================================================= */
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border-radius: 5px;
+  border: 2px solid transparent;
+}
+
+.dot.free {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+}
+
+.dot.occupied {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.25);
+}
+
+@media (max-width: 480px) {
+  .map-page {
+    padding: 24px 14px 40px;
+  }
+
+  .spots-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 10px;
+    padding: 60px 14px;
+  }
+}

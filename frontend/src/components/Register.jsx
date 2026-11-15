@@ -54,7 +54,7 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-card">
+    <div className="auth-card entry-card">
       <h2 className="auth-title">הרשמת משתמש חדש</h2>
 
       <Alert type="error" message={error} />

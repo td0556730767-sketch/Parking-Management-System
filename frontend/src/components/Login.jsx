@@ -51,7 +51,7 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-card">
+    <div className="auth-card entry-card">
       <h2 className="auth-title">התחברות למערכת</h2>
 
       <Alert type="success" message={message} />

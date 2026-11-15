@@ -46,7 +46,7 @@ const ParkingGate = () => {
   const isBusy = gateState === 'checking';
 
   return (
-    <div className="auth-card">
+    <div className="auth-card gate-card">
       <h2 className="auth-title">שער החניון</h2>
 
       <div className="parking-gate-simulation">

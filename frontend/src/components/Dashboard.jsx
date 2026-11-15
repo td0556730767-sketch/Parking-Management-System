@@ -18,13 +18,13 @@ const Dashboard = () => {
   }, [user?.userId]);
 
   return (
-    <div className="auth-card">
+    <div className="auth-card dashboard-card">
       <h2 className="auth-title">שלום {profile?.fullName}</h2>
 
       <Alert type="error" message={error} />
 
-      <p>נקודות זכות: <strong>{profile?.stars ?? 0}</strong></p>
-      <p>יתרה: <strong>{profile?.balance ?? 0} ₪</strong></p>
+      <p className="stat-line">נקודות זכות: <strong>{profile?.stars ?? 0}</strong></p>
+      <p className="stat-line">יתרה: <strong>{profile?.balance ?? 0} ₪</strong></p>
     </div>
   );
 };

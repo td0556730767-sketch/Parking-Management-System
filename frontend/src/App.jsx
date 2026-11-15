@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import ParkingGate from './components/ParkingGate';
+import ParkingMap from './components/ParkingMap';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/gate" element={<ParkingGate />} />
+        <Route path="/map" element={<ParkingMap />} />
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <Dashboard />

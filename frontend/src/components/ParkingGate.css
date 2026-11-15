@@ -1,31 +1,118 @@
+/* =========================================================
+   Gate card
+   ========================================================= */
+.gate-card {
+  max-width: 440px;
+}
+
+/* Exit button – dark secondary style (the entry button stays blue) */
+.gate-card .submit-button:last-of-type:not(:disabled) {
+  background: var(--foreground);
+  box-shadow: 0 8px 20px -10px rgba(15, 23, 42, 0.6);
+}
+
+.gate-card .submit-button:last-of-type:hover:not(:disabled) {
+  background: #1e293b;
+}
+
+/* =========================================================
+   Barrier scene
+   ========================================================= */
 .parking-gate-simulation {
   position: relative;
-  width: 200px;
-  height: 120px;
-  margin: 20px auto;
-  border-bottom: 4px solid #333;
+  width: 100%;
+  max-width: 320px;
+  height: 230px;
+  margin: 0 auto 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #e8f0ff 0%, #f4f7ff 55%, #eef2f7 100%);
+  overflow: hidden;
+}
+
+/* road */
+.parking-gate-simulation::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34px;
+  border-top: 3px solid #94a3b8;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.85) 0 18px, transparent 18px 36px) center / 100% 3px no-repeat,
+    linear-gradient(#334155, #1e293b);
+}
+
+/* parking sign */
+.parking-gate-simulation::after {
+  content: '';
+  position: absolute;
+  right: 30px;
+  bottom: 34px;
+  width: 46px;
+  height: 110px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 110'%3E%3Crect x='21' y='40' width='4' height='70' fill='%2394a3b8'/%3E%3Crect width='46' height='46' rx='10' fill='%232563eb'/%3E%3Ctext x='23' y='33' text-anchor='middle' font-family='Arial,sans-serif' font-weight='700' font-size='28' fill='white'%3EP%3C/text%3E%3C/svg%3E")
+    no-repeat center / contain;
+  filter: drop-shadow(0 6px 10px rgba(37, 99, 235, 0.25));
 }
 
 .barrier-post {
   position: absolute;
-  bottom: 0;
-  left: 20px;
-  width: 20px;
-  height: 60px;
-  background-color: #555;
+  z-index: 1;
+  bottom: 34px;
+  left: 56px;
+  width: 22px;
+  height: 64px;
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(90deg, #475569, #64748b 50%, #475569);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
+}
+
+/* post cap */
+.barrier-post::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 30px;
+  height: 10px;
+  border-radius: 5px;
+  background: #1e293b;
+  transform: translateX(-50%);
 }
 
 .barrier-arm {
   position: absolute;
-  top: 10px;
-  left: 15px;
-  width: 120px;
-  height: 10px;
-  background-color: #ff3b30;
+  z-index: 2;
+  top: 134px;
+  left: 67px;
+  width: 130px;
+  height: 12px;
+  border-radius: 6px;
+  background: repeating-linear-gradient(90deg, #ef4444 0 16px, #ffffff 16px 32px);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25), inset 0 0 0 1px rgba(15, 23, 42, 0.08);
   transform-origin: left center;
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1), box-shadow 0.3s ease;
 }
 
+/* status lamp on the pivot */
+.barrier-arm::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid #1e293b;
+  background: var(--danger);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+  transform: translateY(-50%);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ---------- states ---------- */
 .barrier-arm.closed {
   transform: rotate(0deg);
 }
@@ -34,11 +121,28 @@
   animation: jitter 0.3s infinite alternate;
 }
 
+.barrier-arm.checking::before {
+  background: var(--warning);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+  animation: lamp-blink 0.6s infinite alternate;
+}
+
 .barrier-arm.open {
   transform: rotate(-90deg);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.45), inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+}
+
+.barrier-arm.open::before {
+  background: var(--success);
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.9);
 }
 
 @keyframes jitter {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(-3deg); }
+}
+
+@keyframes lamp-blink {
+  from { opacity: 1; }
+  to { opacity: 0.35; }
 }

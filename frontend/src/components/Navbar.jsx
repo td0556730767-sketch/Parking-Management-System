@@ -17,6 +17,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
         <Link to="/gate">שער כניסה</Link>
+        <Link to="/map">מפת חניון</Link>
       {isAuthenticated ? (
         <>
           <Link to="/dashboard">האזור שלי</Link>
