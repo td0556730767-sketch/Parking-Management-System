@@ -140,8 +140,8 @@ public class ParkingService {
         if (availableParkings.isEmpty())
             throw new ParkingException("מצטערים אין מקום פנוי כרגע לנכה וגם לרגיל");
         return availableParkings.stream().min(
-                Comparator.comparingDouble(spot-> Math.sqrt(Math.pow(spot.getLocationX(),2))+Math.pow(spot.getLocationY(),2))
-        ).orElseThrow(()->new ParkingException("מצטערים איו חניה פנויה "));
+                Comparator.comparingDouble(spot ->
+                        Math.sqrt(Math.pow(spot.getLocationX(), 2) + Math.pow(spot.getLocationY(), 2)))        ).orElseThrow(()->new ParkingException("מצטערים איו חניה פנויה "));
 
     }
 }

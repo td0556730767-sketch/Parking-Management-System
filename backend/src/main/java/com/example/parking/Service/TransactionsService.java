@@ -5,6 +5,7 @@ import com.example.parking.Entities.Vehicles;
 import com.example.parking.Entities.enums.TransactionStatus;
 import com.example.parking.Entities.enums.VehicleType;
 import com.example.parking.Exceptions.ParkingException;
+import com.example.parking.Reposetories.ParkingRepo;
 import com.example.parking.Reposetories.TransactionsRepo;
 import com.example.parking.Reposetories.VehiclesRepo;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class TransactionsService {
     private final TransactionsRepo transactionsRepo;
     private final ParkingService parkingService;
     private final VehiclesRepo vehiclesRepo;
+    private final ParkingRepo parkingRepo;
 
     /**
      * מחזירה את כל היסטוריית העסקאות במערכת (למנהל החניון)
@@ -87,6 +89,8 @@ public class TransactionsService {
         Parking parking=parkingService.findOptimalSpot(transactions.getVehicle().getVehicleType());
 
         transactions.setParking(parking);
+        parking.setOccupied(true);
+        parkingRepo.save(parking);
         transactions.setStatus(TransactionStatus.ACTIVE);
         transactions.setStartTime(LocalDateTime.now());
         return transactionsRepo.save(transactions);
@@ -134,6 +138,11 @@ public class TransactionsService {
         activeTransaction.setEndTime(actualExitTime);
         activeTransaction.setTotalPayment(basePrice + penalty);
         activeTransaction.setStatus(TransactionStatus.COMPLETED);
+        Parking spot = activeTransaction.getParking();
+        if (spot != null) {
+            spot.setOccupied(false);
+            parkingRepo.save(spot);
+        }
 
         return transactionsRepo.save(activeTransaction);
 

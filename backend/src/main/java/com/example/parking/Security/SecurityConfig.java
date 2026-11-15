@@ -64,6 +64,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/transactions/exit/**").permitAll()
                         .requestMatchers("/api/transactions/start/**").permitAll()
+                        .requestMatchers("/api/parking/getAllParking").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/users/getAllUsers").hasRole("ADMIN")
                         .requestMatchers("/api/users/**").authenticated()

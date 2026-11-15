@@ -32,7 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // החרגה של נתיבי פתוחים (כמו לוגין ורגיסטר) כדי שהפילטר לא יציק להם
         if (path.startsWith("/auth") || path.contains("/login") || path.contains("/register")
-                || path.startsWith("/api/transactions/start") || path.startsWith("/api/transactions/exit")) {
+                || path.startsWith("/api/transactions/start") || path.startsWith("/api/transactions/exit")
+                || path.startsWith("/api/parking/getAllParking")) {
             filterChain.doFilter(request, response);
             return;
         }
